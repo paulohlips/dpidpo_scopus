@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 import csv
 import json
+import re
 
 
 lattes_table = list()  # vetor nome,[variações]
+lattes_table_clean = list()  # vetor nome,[variações] e sem espaços em branco
 line_dataframe = list()
 author_vector = list()
 match = 0
@@ -40,14 +42,20 @@ for line in lattes["Nome em Citações Bibliográficas"]:
         header=False, index=False), lattes_vector]),
     n += 1
 
-x = 'paulo'
-y = ["paulo", 'henrique']
-# Faz a desambiguação com base no lattes
+for name in lattes_table:
+    for item in name[1]:
+        # print(item)
+        #name_clean = re.sub(".", ".", item)
+        # print(item)
+        lattes_table_clean.append(item)
 
+# print(lattes_table_clean)
+
+""" # Faz a desambiguação com base no lattes
 for author in author_vector:
-    for i in range(0, len(lattes_table)):
+    for i in range(0, len(lattes_table_clean)):
         # if any(word in author for word in lattes_table[i][1]):
-        for name in lattes_table[i][1]:
+        for name in lattes_table_clean[i][1]:
             if author == name:
                 match += 1
                 print(author, name)
@@ -57,11 +65,17 @@ for author in author_vector:
 
 
 print(j, match, notMatch)
+ """
 
-
-""" f = open("./csv/data_frame_lattes.csv", "w")
+f = open("./csv/lattes_clean_table.csv", "w",)
 with f:
     writer = csv.writer(f)
-    for row in lattes_vector:
-        writer.writerow(row)
- """
+    for item in lattes_table_clean:
+        writer.writerow([item])
+
+# Escreve .csv de autores para desambiguação com Lattes
+f = open('./csv/autores_scopus_desambiguacao.csv', 'w')
+with f:
+    writer = csv.writer(f)
+    for row in author_vector:
+        writer.writerow([row])

@@ -17,7 +17,7 @@ unb = [
 author_id = 0
 edge_id = 0
 # Importa arquivo .csv
-scopus_csv = pd.read_csv('./scopus/merge.csv')
+scopus_csv = pd.read_csv('./scopus/2019.csv')
 scopus_df = pd.DataFrame(scopus_csv)
 
 lastRow = len(scopus_csv)
@@ -57,7 +57,7 @@ for k in range(lastRow):
     for l in range(len(authorsVector)):
         author_id += 1
         authorsListId.append(
-            [authorsVector[l], authorsVector[l], affiliationColumn[l], author_id,  scopus_df['Year'][k]])
+            [authorsVector[l], affiliationColumn[l], authorsVector[l],  scopus_df['Year'][k]])
 
     # Cria o relacionamento de todos com todos para a produção
     for j in range(len(authorsVector)):
@@ -65,7 +65,7 @@ for k in range(lastRow):
             if(authorsVector[j] != item and item != ''):
                 edge_id += 1
                 relationVector.append(
-                    [authorsVector[j], authorsVector[j], item])
+                    [authorsVector[j], item])
         authorsVector[j] = ''
 
 
@@ -73,11 +73,22 @@ for k in range(lastRow):
 f = open('./csv/nodes.csv', 'w')
 with f:
     writer = csv.writer(f)
+    writer.writerow(["label,unb,id,year"])
     for row in authorsListId:
         writer.writerow(row)
 
+# Escreve .csv de arestas
 f = open('./csv/edges.csv', 'w')
 with f:
     writer = csv.writer(f)
+    writer.writerow(["source,target"])
     for row in relationVector:
         writer.writerow(row)
+
+""" # Escreve .csv de autores para desambiguação com Lattes
+f = open('./csv/autores_scopus_desambiguacao.csv', 'w')
+with f:
+    writer = csv.writer(f)
+    for row in authorsListId["author"]:
+        writer.writerow([row])
+ """
